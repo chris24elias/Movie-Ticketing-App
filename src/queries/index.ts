@@ -5,7 +5,12 @@ import {
   QueryClient,
   QueryClientProvider,
 } from "@tanstack/react-query";
-import { getMovieGenreList, getPopularMovies } from "../api";
+import {
+  getMovieCast,
+  getMovieGenreList,
+  getPersonImages,
+  getPopularMovies,
+} from "../api";
 import { Movie } from "../api/types";
 
 export const usePopularMovies = () =>
@@ -13,6 +18,12 @@ export const usePopularMovies = () =>
 
 export const useMovieGenres = () =>
   useQuery(["movie-genres"], getMovieGenreList);
+
+export const useMovieCast = (movieId: string) =>
+  useQuery(["movie-cast", movieId], () => getMovieCast(movieId));
+
+export const usePersonImages = (personId: string) =>
+  useQuery(["person-images", personId], () => getPersonImages(personId));
 
 export const getUrlForImagePath = (
   filePath: string,

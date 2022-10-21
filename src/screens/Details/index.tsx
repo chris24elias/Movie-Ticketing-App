@@ -1,8 +1,12 @@
 import React, { PropsWithChildren, useEffect, useLayoutEffect } from "react";
-import { Box, Icon, Pressable, Row, Text } from "native-base";
+import { Box, Icon, Pressable, Row, ScrollView, Text } from "native-base";
 import { Poster } from "../../components/Poster";
 import { SharedElement } from "react-navigation-shared-element";
-import { getUrlForImagePath } from "../../queries";
+import {
+  getUrlForImagePath,
+  useMovieCast,
+  usePersonImages,
+} from "../../queries";
 import {
   Image,
   InteractionManager,
@@ -18,6 +22,9 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import { useFocusEffect } from "@react-navigation/native";
+import { Movie } from "../../api/types";
+import Rating from "../../components/Rating";
+import Genres from "../../components/Genres";
 
 export type IDetailsProps = {
   navigation;
@@ -25,7 +32,7 @@ export type IDetailsProps = {
 };
 
 const Details = ({ navigation, route }: PropsWithChildren<IDetailsProps>) => {
-  const { item } = route.params || {};
+  const { item }: { item: Movie } = route.params || {};
   const { height, width } = useWindowDimensions();
   const insets = useSafeAreaInsets();
 
@@ -78,6 +85,16 @@ const Details = ({ navigation, route }: PropsWithChildren<IDetailsProps>) => {
       >
         <PlayOverlay {...{ imageHeight, width }} />
       </Animated.View>
+
+      <Box alignItems="center" px="4">
+        <Text mt="2" fontSize="3xl" fontWeight="semibold">
+          {item.title}
+        </Text>
+        <Rating rating={item.vote_average} />
+        <Genres genres={item.genre_ids} />
+
+        <Cast movie={item} />
+      </Box>
     </Box>
   );
 };
@@ -131,6 +148,44 @@ const PlayOverlay = ({ imageHeight, width }) => {
       <Text mt="2" color="white">
         Play Trailer
       </Text>
+    </Box>
+  );
+};
+
+const Cast = ({ movie }: { movie: Movie }) => {
+  const { data, isLoading, isError, error } = useMovieCast(movie.id);
+
+  if (!data) return null;
+
+  return (
+    <Box>
+      <Text fontSize="lg" fontWeight="semibold">
+        Cast
+      </Text>
+      <ScrollView horizontal mt="2">
+        {data.cast.slice(0, 5).map((person) => {
+          const names = person.name.split(" ");
+          const last = names[names.length - 1];
+          return (
+            <Box shadow="3" mr="4" key={`cast_${person.id}`}>
+              <Image
+                source={{ uri: getUrlForImagePath(person.profile_path, 500) }}
+                style={{
+                  height: 150,
+                  width: 150,
+                  backgroundColor: "red",
+
+                  borderRadius: 12,
+                }}
+              />
+              <Text numberOfLines={2} mt="2">
+                {person.name.replace(last, "")}
+                {`\n${last}`}
+              </Text>
+            </Box>
+          );
+        })}
+      </ScrollView>
     </Box>
   );
 };

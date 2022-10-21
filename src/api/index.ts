@@ -24,3 +24,15 @@ export const getMovieGenreList = () => {
     .get(`/genre/movie/list?api_key=${TMDB_API_KEY}`)
     .then((res) => res.data.genres);
 };
+
+export const getMovieCast = (movieId: string) => {
+  return tmdbAPi
+    .get(`/movie/${movieId}/credits?api_key=${TMDB_API_KEY}`)
+    .then((res) => res.data);
+};
+
+export const getPersonImages = (personId: string) => {
+  return tmdbAPi
+    .get(`/person/${personId}/images?api_key=${TMDB_API_KEY}`)
+    .then((res) => res.data);
+};

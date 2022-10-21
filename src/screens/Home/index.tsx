@@ -7,26 +7,23 @@ import {
   View,
   ViewStyle,
 } from "react-native";
-import {
-  getUrlForImagePath,
-  useMovieGenres,
-  usePopularMovies,
-} from "../../queries";
-import { Container, Title } from "../../styles";
+import { getUrlForImagePath, usePopularMovies } from "../../queries";
+import { Container } from "../../styles";
 import Carousel from "react-native-reanimated-carousel";
 import { Movie } from "../../api/types";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
-import { Poster } from "../../components/Poster";
 import Animated, {
   Extrapolate,
   interpolate,
   useAnimatedStyle,
   useSharedValue,
 } from "react-native-reanimated";
-import { AntDesign } from "@expo/vector-icons";
+
 import { Box, Row, Text } from "native-base";
 import { SharedElement } from "react-navigation-shared-element";
+import Rating from "../../components/Rating";
+import Genres from "../../components/Genres";
 
 type TAnimationStyle = (value: number) => Animated.AnimateStyle<ViewStyle>;
 
@@ -40,7 +37,6 @@ const Home = ({ navigation }: PropsWithChildren<IHomeProps>) => {
   const { width, height } = useWindowDimensions();
   const insets = useSafeAreaInsets();
   const { data, isLoading, isError } = usePopularMovies();
-  const { data: genres, isLoading: genresLoading } = useMovieGenres();
   const [index, setIndex] = useState(0);
   const progress = useSharedValue(0);
 
@@ -74,7 +70,7 @@ const Home = ({ navigation }: PropsWithChildren<IHomeProps>) => {
     };
   }, []);
 
-  if (isLoading || genresLoading) {
+  if (isLoading) {
     return null; // @todo fix this, add loader
   }
 
@@ -150,7 +146,7 @@ const Home = ({ navigation }: PropsWithChildren<IHomeProps>) => {
             </Box>
 
             <Rating rating={item.vote_average} />
-            <Genres genres={item.genre_ids} genreList={genres} />
+            <Genres genres={item.genre_ids} />
             <BookButton />
           </View>
         </View>
@@ -273,50 +269,6 @@ const MovieBackdrop = ({ backdrop, height, width, progress, index }) => {
       ]}
       // resizeMode="contain"
     />
-  );
-};
-
-const Rating = ({ rating }) => {
-  return (
-    <View style={{ flexDirection: "row", marginTop: 10 }}>
-      {new Array(Math.round(rating / 2)).fill("x").map((_, i) => {
-        return (
-          <AntDesign
-            key={`rating_${i}`}
-            name="star"
-            color={"gold"}
-            style={{ marginRight: 3.5 }}
-            size={15}
-          />
-        );
-      })}
-    </View>
-  );
-};
-
-const Genres = ({ genres, genreList }) => {
-  return (
-    <Row space="2" mt="4">
-      {genres.slice(0, 3).map((id: number) => {
-        const genre = genreList.find((g) => g.id === id);
-
-        if (!genre) return null;
-        return (
-          <Box
-            key={`genre_${id}`}
-            borderWidth={"1"}
-            borderColor={"gray.300"}
-            borderRadius="full"
-            py="1"
-            px="2"
-          >
-            <Text fontSize="xs" fontWeight="semibold">
-              {genre.name}
-            </Text>
-          </Box>
-        );
-      })}
-    </Row>
   );
 };
 
