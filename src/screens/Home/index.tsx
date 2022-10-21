@@ -24,7 +24,7 @@ type TAnimationStyle = (value: number) => Animated.AnimateStyle<ViewStyle>;
 
 export type IHomeProps = {};
 
-const bgGrey = "rgb(169,169,169)";
+const bgGrey = "rgb(211,211,211)";
 
 const Home = ({}: PropsWithChildren<IHomeProps>) => {
   const { width, height } = useWindowDimensions();
@@ -37,7 +37,7 @@ const Home = ({}: PropsWithChildren<IHomeProps>) => {
   const animationStyle: TAnimationStyle = React.useCallback((value: number) => {
     "worklet";
 
-    const offset = 40;
+    const offset = 25;
     const offsetY = 150;
     // const zIndex = interpolate(value, [-1, 0, 1], [10, 20, 30]);
     const translateX = interpolate(
@@ -72,7 +72,7 @@ const Home = ({}: PropsWithChildren<IHomeProps>) => {
     const posterSize = width * 0.5;
     const backdropSize = width;
     const containerHeight = height * 0.65;
-    const containerWidth = width * 0.7;
+    const containerWidth = width * 0.75;
     return (
       <View style={{ flex: 1 }}>
         <View
@@ -163,11 +163,11 @@ const Home = ({}: PropsWithChildren<IHomeProps>) => {
               style={{
                 position: "absolute",
                 zIndex: 1,
-                height: "70%",
+                height: "75%",
                 width: "100%",
                 bottom: 0,
               }}
-              end={{ x: 0.5, y: 0.25 }}
+              end={{ x: 0.5, y: 0.3 }}
             />
             {data.results.map((m, i) => {
               return (
@@ -196,14 +196,37 @@ const MovieBackdrop = ({ backdrop, height, width, progress, index }) => {
     const current = index;
     const next = index + 1;
 
+    // const opacity = interpolate(
+    //   progress.value,
+    //   [prev, prev + 0.25, current, next - 0.25, next],
+    //   [0, 0.25, 1, 0.25, 0],
+    //   Extrapolate.CLAMP
+    // );
+
     const opacity = interpolate(
       progress.value,
-      [prev, prev + 0.25, current, next - 0.25, next],
-      [0, 0.25, 1, 0.25, 0],
+      [prev, current, next],
+      [0, 1, 0],
       Extrapolate.CLAMP
     );
+
+    const scale = interpolate(
+      progress.value,
+      [prev, current, next],
+      [1, 1.1, 1.2],
+      Extrapolate.CLAMP
+    );
+
+    const translateY = interpolate(
+      progress.value,
+      [prev, current, next],
+      [-20, 0, 20],
+      Extrapolate.CLAMP
+    );
+
     return {
       opacity,
+      transform: [{ scale }, { translateY }],
     };
   });
 
@@ -272,15 +295,15 @@ const BookButton = ({}) => {
   return (
     <Box
       borderRadius="full"
-      height={"12"}
-      width="40"
+      height={"16"}
+      width="3/5"
       px="4"
       // justifyContent="center"
       alignItems="center"
-      pt="3"
+      pt="4"
       backgroundColor="black"
       position="absolute"
-      bottom={0}
+      bottom={-10}
     >
       <Text color="white" fontSize="xs" fontWeight="bold">
         BOOK NOW
