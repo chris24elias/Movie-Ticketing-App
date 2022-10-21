@@ -13,5 +13,5 @@ export const Title = styled.Text`
   font-size: 25px;
   font-weight: bold;
   letter-spacing: 2px;
-  margin-top: 10px;
+  margin-top: 20px;
 `;

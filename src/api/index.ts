@@ -16,12 +16,11 @@ export const getPopularMovies = () => {
 export const getConfiguration = () => {
   return tmdbAPi
     .get(`/configuration?api_key=${TMDB_API_KEY}`)
-    .then((res) => res.data)
-    .catch((err) => {
-      console.log("ERR", err);
-    });
+    .then((res) => res.data);
 };
 
-// getConfiguration().then((res) => {
-//   console.log("RES", res);
-// });
+export const getMovieGenreList = () => {
+  return tmdbAPi
+    .get(`/genre/movie/list?api_key=${TMDB_API_KEY}`)
+    .then((res) => res.data.genres);
+};
