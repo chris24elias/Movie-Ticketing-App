@@ -1,5 +1,12 @@
-import React, { PropsWithChildren, useState } from "react";
-import { Image, useWindowDimensions, View, ViewStyle } from "react-native";
+import React, { PropsWithChildren, useEffect, useState } from "react";
+import {
+  Image,
+  Pressable,
+  StyleSheet,
+  useWindowDimensions,
+  View,
+  ViewStyle,
+} from "react-native";
 import {
   getUrlForImagePath,
   useMovieGenres,
@@ -19,14 +26,17 @@ import Animated, {
 } from "react-native-reanimated";
 import { AntDesign } from "@expo/vector-icons";
 import { Box, Row, Text } from "native-base";
+import { SharedElement } from "react-navigation-shared-element";
 
 type TAnimationStyle = (value: number) => Animated.AnimateStyle<ViewStyle>;
 
-export type IHomeProps = {};
+export type IHomeProps = {
+  navigation: any;
+};
 
 const bgGrey = "rgb(211,211,211)";
 
-const Home = ({}: PropsWithChildren<IHomeProps>) => {
+const Home = ({ navigation }: PropsWithChildren<IHomeProps>) => {
   const { width, height } = useWindowDimensions();
   const insets = useSafeAreaInsets();
   const { data, isLoading, isError } = usePopularMovies();
@@ -73,6 +83,9 @@ const Home = ({}: PropsWithChildren<IHomeProps>) => {
     const backdropSize = width;
     const containerHeight = height * 0.65;
     const containerWidth = width * 0.75;
+
+    const onPress = () => navigation.navigate("Detail", { item });
+
     return (
       <View style={{ flex: 1 }}>
         <View
@@ -105,7 +118,8 @@ const Home = ({}: PropsWithChildren<IHomeProps>) => {
               alignItems: "center",
             }}
           >
-            <View
+            <Pressable
+              onPress={onPress}
               style={{
                 height: "60%",
                 width: "80%",
@@ -114,10 +128,22 @@ const Home = ({}: PropsWithChildren<IHomeProps>) => {
                 marginTop: "9%",
               }}
             >
-              <Poster source={getUrlForImagePath(item.poster_path, 500)} />
-            </View>
+              <SharedElement
+                id={`item.${item.id}.photo`}
+                style={{ flex: 1, borderRadius: 120 }}
+              >
+                {/* <Poster source={getUrlForImagePath(item.poster_path, 500)} /> */}
+                <Image
+                  style={{
+                    ...StyleSheet.absoluteFillObject,
+                    borderRadius: 120,
+                  }}
+                  source={{ uri: getUrlForImagePath(item.poster_path, 500) }}
+                />
+              </SharedElement>
+            </Pressable>
 
-            <Box px="4">
+            <Box px="4" mt="2">
               <Text fontSize="3xl" adjustsFontSizeToFit numberOfLines={1}>
                 {item.title}
               </Text>
@@ -225,6 +251,7 @@ const MovieBackdrop = ({ backdrop, height, width, progress, index }) => {
     );
 
     return {
+      top: "2%",
       opacity,
       transform: [{ scale }, { translateY }],
     };
@@ -252,9 +279,10 @@ const MovieBackdrop = ({ backdrop, height, width, progress, index }) => {
 const Rating = ({ rating }) => {
   return (
     <View style={{ flexDirection: "row", marginTop: 10 }}>
-      {new Array(Math.round(rating / 2)).fill("x").map(() => {
+      {new Array(Math.round(rating / 2)).fill("x").map((_, i) => {
         return (
           <AntDesign
+            key={`rating_${i}`}
             name="star"
             color={"gold"}
             style={{ marginRight: 3.5 }}
@@ -269,12 +297,13 @@ const Rating = ({ rating }) => {
 const Genres = ({ genres, genreList }) => {
   return (
     <Row space="2" mt="4">
-      {genres.slice(0, 3).map((id) => {
+      {genres.slice(0, 3).map((id: number) => {
         const genre = genreList.find((g) => g.id === id);
 
         if (!genre) return null;
         return (
           <Box
+            key={`genre_${id}`}
             borderWidth={"1"}
             borderColor={"gray.300"}
             borderRadius="full"

@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { NativeBaseProvider } from "native-base";
+import { NativeBaseProvider, StatusBar } from "native-base";
 import "react-native-gesture-handler";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Navigation } from "./src/navigation";
@@ -13,6 +13,7 @@ export default function App() {
       <GestureHandlerRootView style={{ flex: 1 }}>
         <NativeBaseProvider>
           <Navigation />
+          <StatusBar barStyle="light-content" />
         </NativeBaseProvider>
       </GestureHandlerRootView>
     </QueryClientProvider>

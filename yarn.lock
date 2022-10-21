@@ -2230,6 +2230,15 @@
   dependencies:
     nanoid "^3.1.23"
 
+"@react-navigation/stack@^6.3.2":
+  version "6.3.2"
+  resolved "https://registry.yarnpkg.com/@react-navigation/stack/-/stack-6.3.2.tgz#ba0a65e10e2b165185f20718046f25d8c9abb076"
+  integrity sha512-wb8koMp4OTrG5geOqEFPDatTyl8dsSyRBHN4h0wzgNT29V/JjkS3LYwkGLLfUmMfeLXFyIfEPILAjYLFmnk3dA==
+  dependencies:
+    "@react-navigation/elements" "^1.3.6"
+    color "^4.2.3"
+    warn-once "^0.1.0"
+
 "@react-stately/checkbox@3.0.3":
   version "3.0.3"
   resolved "https://registry.yarnpkg.com/@react-stately/checkbox/-/checkbox-3.0.3.tgz#18ee6bd3b544334b6f853bb5c5f7017ac3bb9c37"
@@ -3504,10 +3513,26 @@ color-name@1.1.3:
   resolved "https://registry.yarnpkg.com/color-name/-/color-name-1.1.3.tgz#a7d0558bd89c42f795dd42328f740831ca53bc25"
   integrity sha512-72fSenhMw2HZMTVHeCA9KCmpEIbzWiQsjN+BHcBbS9vr1mtt+vJjPdksIBNUmKAW8TFUDPJK5SUU3QhE9NEXDw==
 
-color-name@~1.1.4:
+color-name@^1.0.0, color-name@~1.1.4:
   version "1.1.4"
   resolved "https://registry.yarnpkg.com/color-name/-/color-name-1.1.4.tgz#c2a09a87acbde69543de6f63fa3995c826c536a2"
   integrity sha512-dOy+3AuW3a2wNbZHIuMZpTcgjGuLU/uBL/ubcZF9OXbDo8ff4O8yVp5Bf0efS8uEoYo5q4Fx7dY9OgQGXgAsQA==
+
+color-string@^1.9.0:
+  version "1.9.1"
+  resolved "https://registry.yarnpkg.com/color-string/-/color-string-1.9.1.tgz#4467f9146f036f855b764dfb5bf8582bf342c7a4"
+  integrity sha512-shrVawQFojnZv6xM40anx4CkoDP+fZsw/ZerEMsW/pyzsRbElpsL/DBVW7q3ExxwusdNXI3lXpuhEZkzs8p5Eg==
+  dependencies:
+    color-name "^1.0.0"
+    simple-swizzle "^0.2.2"
+
+color@^4.2.3:
+  version "4.2.3"
+  resolved "https://registry.yarnpkg.com/color/-/color-4.2.3.tgz#d781ecb5e57224ee43ea9627560107c0e0c6463a"
+  integrity sha512-1rXeuUUiGGrykh+CeBdu5Ie7OJwinCgQY0bc7GCRxy5xVHy+moaqkpL/jqQq0MtQOeYcrqEz4abc5f0KtU7W4A==
+  dependencies:
+    color-convert "^2.0.1"
+    color-string "^1.9.0"
 
 colorette@^1.0.7:
   version "1.4.0"
@@ -4640,7 +4665,7 @@ hermes-profile-transformer@^0.0.6:
   dependencies:
     source-map "^0.7.3"
 
-hoist-non-react-statics@^3.0.0, hoist-non-react-statics@^3.3.0:
+hoist-non-react-statics@^3.0.0, hoist-non-react-statics@^3.3.0, hoist-non-react-statics@^3.3.2:
   version "3.3.2"
   resolved "https://registry.yarnpkg.com/hoist-non-react-statics/-/hoist-non-react-statics-3.3.2.tgz#ece0acaf71d62c2969c2ec59feff42a4b1a85b45"
   integrity sha512-/gGivxi8JPKWNm/W0jSmzcMPpfpPLc3dY/6GxhX2hQ9iGj3aDfklV4ET7NjKpSinLpJ5vafa9iiGIEZg10SfBw==
@@ -4814,6 +4839,11 @@ is-arrayish@^0.2.1:
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/is-arrayish/-/is-arrayish-0.2.1.tgz#77c99840527aa8ecb1a8ba697b80645a7a926a9d"
   integrity sha512-zz06S8t0ozoDXMG+ube26zeCTNXcKIPJZJi8hBrF4idCLms4CG9QtK7qBl1boi5ODzFpjswb5JPmHCbMpjaYzg==
+
+is-arrayish@^0.3.1:
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/is-arrayish/-/is-arrayish-0.3.2.tgz#4574a2ae56f7ab206896fb431eaeed066fdf8f03"
+  integrity sha512-eVRqCvVlZbuw3GrM63ovNSNAeA1K16kaR/LRY/92w0zxQ5/1YzwblUX652i4Xs9RwAGjW9d9y6X88t8OaAJfWQ==
 
 is-buffer@^1.1.5, is-buffer@~1.1.1, is-buffer@~1.1.6:
   version "1.1.6"
@@ -6648,6 +6678,11 @@ react-native-screens@~3.15.0:
     react-freeze "^1.0.0"
     warn-once "^0.1.0"
 
+react-native-shared-element@^0.8.4:
+  version "0.8.4"
+  resolved "https://registry.yarnpkg.com/react-native-shared-element/-/react-native-shared-element-0.8.4.tgz#dd97b992e53633a57ea728327f7c02bad3c5af14"
+  integrity sha512-agRuD5AB4daw4QLo7KCTBqCtmIjbQkqpwsT/aYrxDu/McvTCdDuXVttaVMrqeyAgdDkU1egp41FdiExS1L/hJw==
+
 react-native-svg@12.3.0:
   version "12.3.0"
   resolved "https://registry.yarnpkg.com/react-native-svg/-/react-native-svg-12.3.0.tgz#40f657c5d1ee366df23f3ec8dae76fd276b86248"
@@ -6707,6 +6742,13 @@ react-native@0.69.6:
     use-sync-external-store "^1.0.0"
     whatwg-fetch "^3.0.0"
     ws "^6.1.4"
+
+react-navigation-shared-element@^3.1.3:
+  version "3.1.3"
+  resolved "https://registry.yarnpkg.com/react-navigation-shared-element/-/react-navigation-shared-element-3.1.3.tgz#c75084ca8cab09063297a39ff1110de0dc732aab"
+  integrity sha512-U1BZp7dEdcTNHggfkq3WEBlJeg4HwFhFdj7a0i0Uql/7mg2IHQg/bZaqM2jQvJITkABge6Hz5fZixIF8jyzpkg==
+  dependencies:
+    hoist-non-react-statics "^3.3.2"
 
 react-refresh@^0.4.0:
   version "0.4.3"
@@ -7153,6 +7195,13 @@ simple-plist@^1.1.0:
     bplist-creator "0.1.0"
     bplist-parser "0.3.1"
     plist "^3.0.5"
+
+simple-swizzle@^0.2.2:
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/simple-swizzle/-/simple-swizzle-0.2.2.tgz#a4da6b635ffcccca33f70d17cb92592de95e557a"
+  integrity sha512-JA//kQgZtbuY83m+xT+tXJkmJncGMTFT+C+g2h2R9uxkYIrE2yy9sgmcLhCnw57/WSD+Eh3J97FPEDFnbXnDUg==
+  dependencies:
+    is-arrayish "^0.3.1"
 
 sisteransi@^1.0.5:
   version "1.0.5"
