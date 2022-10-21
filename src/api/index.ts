@@ -25,14 +25,19 @@ export const getMovieGenreList = () => {
     .then((res) => res.data.genres);
 };
 
-export const getMovieCast = (movieId: string) => {
+export const getMovieCast = (movieId: number) => {
   return tmdbAPi
     .get(`/movie/${movieId}/credits?api_key=${TMDB_API_KEY}`)
     .then((res) => res.data);
 };
 
-export const getPersonImages = (personId: string) => {
+export const getPersonImages = (personId: number) => {
   return tmdbAPi
     .get(`/person/${personId}/images?api_key=${TMDB_API_KEY}`)
+    .then((res) => res.data);
+};
+export const getMovieDetails = (movieId: number) => {
+  return tmdbAPi
+    .get(`/movie/${movieId}?api_key=${TMDB_API_KEY}`)
     .then((res) => res.data);
 };

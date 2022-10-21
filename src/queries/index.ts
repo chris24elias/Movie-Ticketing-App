@@ -7,11 +7,12 @@ import {
 } from "@tanstack/react-query";
 import {
   getMovieCast,
+  getMovieDetails,
   getMovieGenreList,
   getPersonImages,
   getPopularMovies,
 } from "../api";
-import { Movie } from "../api/types";
+import { Movie, MovieDetails } from "../api/types";
 
 export const usePopularMovies = () =>
   useQuery<{ results: Movie[]; page: number }>(["popular"], getPopularMovies);
@@ -19,11 +20,16 @@ export const usePopularMovies = () =>
 export const useMovieGenres = () =>
   useQuery(["movie-genres"], getMovieGenreList);
 
-export const useMovieCast = (movieId: string) =>
+export const useMovieCast = (movieId: number) =>
   useQuery(["movie-cast", movieId], () => getMovieCast(movieId));
 
-export const usePersonImages = (personId: string) =>
+export const usePersonImages = (personId: number) =>
   useQuery(["person-images", personId], () => getPersonImages(personId));
+
+export const useMovieDetails = (movieId: number) =>
+  useQuery<MovieDetails>(["movie-details", movieId], () =>
+    getMovieDetails(movieId)
+  );
 
 export const getUrlForImagePath = (
   filePath: string,
