@@ -6,6 +6,7 @@ import {
   QueryClientProvider,
 } from "@tanstack/react-query";
 import {
+  getImagesForMovie,
   getMovieCast,
   getMovieDetails,
   getMovieGenreList,
@@ -44,3 +45,6 @@ export const getUrlForImagePath = (
   }
   return url;
 };
+
+export const useMovieImages = (tmdbId: number) =>
+  useQuery(["movieImages", tmdbId], () => getImagesForMovie(tmdbId));

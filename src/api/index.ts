@@ -41,3 +41,43 @@ export const getMovieDetails = (movieId: number) => {
     .get(`/movie/${movieId}?api_key=${TMDB_API_KEY}`)
     .then((res) => res.data);
 };
+
+type ImageObject = {
+  path: string;
+  height: number;
+  aspect_ratio: number;
+};
+
+export const getImagesForMovie = async (
+  tmdbId: number,
+  size = 500
+): Promise<{
+  posters: ImageObject[];
+  backdrops: ImageObject[];
+  logos: ImageObject[];
+}> => {
+  try {
+    const response = await tmdbAPi.get(
+      `/movie/${tmdbId}/images?api_key=${TMDB_API_KEY}`
+    );
+    const images = response.data;
+
+    const createImageObj = ({ file_path, aspect_ratio, height }) => ({
+      path: `https://image.tmdb.org/t/p/w${size}${file_path}`,
+      aspect_ratio,
+      height,
+    });
+    const max = 6;
+    const posters = images.posters.slice(0, max).map(createImageObj);
+    const backdrops = images.backdrops.slice(0, max).map(createImageObj);
+    const logos = images.logos.slice(0, max).map(createImageObj);
+
+    return {
+      posters: posters,
+      backdrops: backdrops,
+      logos,
+    };
+  } catch (error) {
+    throw error;
+  }
+};

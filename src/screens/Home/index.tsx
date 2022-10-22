@@ -140,7 +140,12 @@ const Home = ({ navigation }: PropsWithChildren<IHomeProps>) => {
             </Pressable>
 
             <Box px="4" mt="2">
-              <Text fontSize="3xl" adjustsFontSizeToFit numberOfLines={1}>
+              <Text
+                fontSize="3xl"
+                adjustsFontSizeToFit
+                numberOfLines={1}
+                fontWeight="semibold"
+              >
                 {item.title}
               </Text>
             </Box>

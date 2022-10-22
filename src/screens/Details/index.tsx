@@ -14,6 +14,7 @@ import {
   getUrlForImagePath,
   useMovieCast,
   useMovieDetails,
+  useMovieImages,
   usePersonImages,
 } from "../../queries";
 import {
@@ -77,10 +78,10 @@ const Details = ({ navigation, route }: PropsWithChildren<IDetailsProps>) => {
   });
 
   return (
-    <Box flex={1}>
+    <Box flex={1} bg="white">
       <ScrollView
         contentContainerStyle={{
-          paddingBottom: insets.bottom,
+          paddingBottom: insets.bottom + height * 0.15,
         }}
       >
         <SharedElement
@@ -117,7 +118,7 @@ const Details = ({ navigation, route }: PropsWithChildren<IDetailsProps>) => {
         <Cast movie={item} />
         <Column
           borderWidth={0.5}
-          backgroundColor="muted.200"
+          backgroundColor="muted.100"
           rounded="md"
           w="4/5"
           ml="4"
@@ -125,7 +126,7 @@ const Details = ({ navigation, route }: PropsWithChildren<IDetailsProps>) => {
           p="4"
           py="6"
           alignSelf="center"
-          borderColor="gray.400"
+          borderColor="gray.300"
           space="4"
         >
           <Row>
@@ -155,7 +156,7 @@ const Details = ({ navigation, route }: PropsWithChildren<IDetailsProps>) => {
           <Text fontSize="xl" fontWeight="semibold" mt="6">
             Gallery
           </Text>
-          <MovieImages />
+          <MovieImages movieId={item.id} />
         </Box>
       </ScrollView>
       <Pressable
@@ -277,6 +278,26 @@ const Cast = ({ movie }: { movie: Movie }) => {
   );
 };
 
-const MovieImages = ({}) => {
-  return <ScrollView horizontal>{/* {} */}</ScrollView>;
+const MovieImages = ({ movieId }) => {
+  const { data } = useMovieImages(movieId);
+  if (!data) return null; //@todo add loader
+  const imageSize = 150;
+  return (
+    <ScrollView horizontal mt="2" pb="4" showsHorizontalScrollIndicator={false}>
+      {data.backdrops.map((image) => {
+        return (
+          <Box shadow="3" mr="3">
+            <Image
+              source={{ uri: image.path }}
+              style={{
+                height: imageSize,
+                width: imageSize * 1.777,
+                borderRadius: 12,
+              }}
+            />
+          </Box>
+        );
+      })}
+    </ScrollView>
+  );
 };
