@@ -38,7 +38,7 @@ export const getPersonImages = (personId: number) => {
 };
 export const getMovieDetails = (movieId: number) => {
   return tmdbAPi
-    .get(`/movie/${movieId}?api_key=${TMDB_API_KEY}`)
+    .get(`/movie/${movieId}?api_key=${TMDB_API_KEY}&append_to_response=videos`)
     .then((res) => res.data);
 };
 
@@ -81,3 +81,9 @@ export const getImagesForMovie = async (
     throw error;
   }
 };
+
+// export const getTrailerForMovie = (movieId) => {
+//   return tmdbAPi
+//   .get(`/movie/${movieId}?api_key=${TMDB_API_KEY}`)
+//   .then((res) => res.data);
+// }

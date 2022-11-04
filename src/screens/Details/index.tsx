@@ -1,44 +1,22 @@
-import React, { PropsWithChildren, useEffect, useLayoutEffect } from "react";
-import {
-  Box,
-  Column,
-  Icon,
-  Pressable,
-  Row,
-  ScrollView,
-  Text,
-} from "native-base";
-import { Poster } from "../../components/Poster";
-import { SharedElement } from "react-navigation-shared-element";
-import {
-  getUrlForImagePath,
-  useMovieCast,
-  useMovieDetails,
-  useMovieImages,
-  usePersonImages,
-} from "../../queries";
-import {
-  Image,
-  InteractionManager,
-  StyleSheet,
-  useWindowDimensions,
-} from "react-native";
+import React, { PropsWithChildren, useEffect, useState } from "react";
+import { Box, Icon, Pressable, Row, Text } from "native-base";
+import { useMovieDetails } from "../../queries";
+import { useWindowDimensions } from "react-native";
 import { Entypo } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Animated, {
+  Easing,
   FadeIn,
-  FadeInDown,
-  FadeInUp,
-  Layout,
   useAnimatedStyle,
   useSharedValue,
   withDelay,
   withTiming,
 } from "react-native-reanimated";
-import { useFocusEffect } from "@react-navigation/native";
 import { Movie } from "../../api/types";
-import Rating from "../../components/Rating";
-import Genres from "../../components/Genres";
+import { Content } from "./Content";
+import { SelectDateSheet } from "./SelectDateSheet";
+
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export type IDetailsProps = {
   navigation;
@@ -50,254 +28,154 @@ const Details = ({ navigation, route }: PropsWithChildren<IDetailsProps>) => {
   const { height, width } = useWindowDimensions();
   const insets = useSafeAreaInsets();
   const { data: details } = useMovieDetails(item.id);
+  const [dateSheetVisible, setDateSheetVisible] = useState(false);
 
-  const imageHeight = height * 0.5;
+  const onPressBack = () => {
+    if (dateSheetVisible) {
+      setDateSheetVisible(false);
+    } else {
+      navigation.goBack();
+    }
+  };
 
-  const hudOpacity = useSharedValue(0);
+  let trailer;
 
-  console.log("details", details);
+  if (details?.videos?.results?.length) {
+    trailer = details?.videos?.results[0];
 
-  // useLayoutEffect(() => {
-  //   hudOpacity.value = withTiming(1, { duration: 1000 });
-  // }, []);
-
-  useFocusEffect(
-    React.useCallback(() => {
-      const task = InteractionManager.runAfterInteractions(() => {
-        // Expensive task
-        hudOpacity.value = withTiming(1, { duration: 250 });
-      });
-
-      return () => task.cancel();
-    }, [])
-  );
-  const animatedStyle = useAnimatedStyle(() => {
-    return {
-      opacity: hudOpacity.value,
-    };
-  });
+    details?.videos?.results?.forEach((vid) => {
+      console.log("vid", vid);
+      if (vid.name.toLowerCase().includes("trailer")) {
+        trailer = vid;
+      }
+    });
+  }
 
   return (
     <Box flex={1} bg="white">
-      <ScrollView
-        contentContainerStyle={{
-          paddingBottom: insets.bottom + height * 0.15,
-        }}
-      >
-        <SharedElement
-          id={`item.${item.id}.photo`}
-          style={{ height: imageHeight, width }}
-        >
-          <Image
-            source={{ uri: getUrlForImagePath(item.poster_path, 500) }}
-            style={StyleSheet.absoluteFill}
-          />
-        </SharedElement>
-
-        <Animated.View
-          style={[
-            animatedStyle,
-            { position: "absolute", zIndex: 2, top: 0, width: "100%" },
-          ]}
-        >
-          <DetailsHeader {...{ insets, navigation }} />
-        </Animated.View>
-        <Animated.View
-          style={[animatedStyle, { position: "absolute", zIndex: 1, top: 0 }]}
-        >
-          <PlayOverlay {...{ imageHeight, width }} />
-        </Animated.View>
-
-        <Box alignItems="center" px="4">
-          <Text mt="2" fontSize="3xl" fontWeight="semibold">
-            {item.title}
-          </Text>
-          <Rating rating={item.vote_average} />
-          <Genres genres={item.genre_ids} />
-        </Box>
-        <Cast movie={item} />
-        <Column
-          borderWidth={0.5}
-          backgroundColor="muted.100"
-          rounded="md"
-          w="4/5"
-          ml="4"
-          mt="8"
-          p="4"
-          py="6"
-          alignSelf="center"
-          borderColor="gray.300"
-          space="4"
-        >
-          <Row>
-            <Text fontWeight="bold">Directed by:</Text>
-            <Text ml="1">Denis Something</Text>
-          </Row>
-          <Row>
-            <Text fontWeight="bold">Year:</Text>
-            <Text ml="1">2021</Text>
-          </Row>
-          <Row>
-            <Text fontWeight="bold">Duration:</Text>
-            <Text ml="1">155 min</Text>
-          </Row>
-          <Row>
-            <Text fontWeight="bold">Distribution:</Text>
-            <Text ml="1">Waner Bros</Text>
-          </Row>
-        </Column>
-        <Box px="6">
-          <Text fontSize="xl" fontWeight="semibold" mt="6">
-            Storyline
-          </Text>
-          <Text>{details?.overview}</Text>
-        </Box>
-        <Box px="6">
-          <Text fontSize="xl" fontWeight="semibold" mt="6">
-            Gallery
-          </Text>
-          <MovieImages movieId={item.id} />
-        </Box>
-      </ScrollView>
-      <Pressable
-        position="absolute"
-        bottom={insets.bottom}
-        style={{ width: "90%" }}
-        height="12"
-        bg="black"
-        shadow="3"
-        alignSelf="center"
-        rounded="xl"
-        justifyContent="center"
-        alignItems="center"
-      >
-        <Text color="white" fontWeight="bold">
-          BOOK NOW
-        </Text>
-      </Pressable>
+      <DetailsHeader {...{ insets, onPressBack }} />
+      <Content item={item} details={details} />
+      <BookButton
+        insets={insets}
+        setDateSheetVisible={setDateSheetVisible}
+        dateSheetVisible={dateSheetVisible}
+      />
+      {details && (
+        <SelectDateSheet visible={dateSheetVisible} trailer={trailer} />
+      )}
     </Box>
   );
 };
 
 export { Details };
 
-const DetailsHeader = ({ navigation, insets }) => {
-  return (
-    <Row
-      style={{ paddingTop: insets.top }}
-      px="4"
-      pr="6"
-      justifyContent="space-between"
-      alignItems="center"
-    >
-      <Pressable flexDirection="row" onPress={() => navigation.goBack()}>
-        <Icon as={Entypo} color="white" name="chevron-left" size={"md"} />
-        <Text color="white" fontWeight="bold">
-          BACK
-        </Text>
-      </Pressable>
+const BookButton = ({ insets, setDateSheetVisible, dateSheetVisible }) => {
+  const { width, height } = useWindowDimensions();
+  const buttonHeight = 48;
+  const btnWidth = useSharedValue(width * 0.9);
+  const btnHeight = useSharedValue(buttonHeight);
+  const textOpacity = useSharedValue(1);
+  const btnBr = useSharedValue(12);
+  const btnBottom = useSharedValue(insets.bottom);
+  const btnScale = useSharedValue(1);
 
-      <Row>
-        <Icon
-          as={Entypo}
-          color="white"
-          name="dots-three-vertical"
-          size={"md"}
-          mr="1"
-        />
-        <Icon as={Entypo} color="white" name="heart-outlined" size={"md"} />
-      </Row>
-    </Row>
-  );
-};
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      width: btnWidth.value,
+      height: btnHeight.value,
+      borderRadius: btnBr.value,
+      bottom: btnBottom.value,
+      transform: [{ scale: btnScale.value }],
+    };
+  });
 
-const PlayOverlay = ({ imageHeight, width }) => {
+  const animatedTextStyle = useAnimatedStyle(() => {
+    return {
+      color: "white",
+      fontWeight: "bold",
+      opacity: textOpacity.value,
+    };
+  });
+  useEffect(() => {
+    if (!dateSheetVisible) {
+      setTimeout(() => {
+        const timingConfig = {
+          duration: 300,
+          easing: Easing.inOut(Easing.ease),
+        };
+        btnWidth.value = withTiming(width * 0.9, timingConfig);
+        btnHeight.value = withTiming(buttonHeight, timingConfig);
+        btnBr.value = withTiming(12, timingConfig);
+        btnScale.value = withTiming(1, timingConfig);
+        btnBottom.value = withTiming(insets.bottom, timingConfig);
+        textOpacity.value = withDelay(200, withTiming(1, timingConfig));
+      }, 150);
+    }
+  }, [dateSheetVisible]);
+
+  const onPress = () => {
+    btnWidth.value = withTiming(buttonHeight);
+    textOpacity.value = withTiming(0);
+    btnBr.value = withTiming(buttonHeight / 2, undefined);
+
+    const timingConfig = { duration: 450, easing: Easing.inOut(Easing.cubic) };
+    btnScale.value = withDelay(300, withTiming(25, timingConfig));
+    btnBottom.value = withDelay(300, withTiming(height / 3, timingConfig));
+
+    setTimeout(() => {
+      setDateSheetVisible(true);
+    }, 550);
+  };
+
   return (
-    <Box
+    <AnimatedPressable
+      position="absolute"
+      bg="black"
+      shadow="3"
+      alignSelf="center"
+      // rounded="xl"
+
       justifyContent="center"
       alignItems="center"
-      style={{ height: imageHeight, width }}
+      style={animatedStyle}
+      onPress={onPress}
     >
-      <Box
-        style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
-        p="6"
-        borderRadius="full"
-      >
-        <Icon as={Entypo} color="white" name="controller-play" size={"3xl"} />
-      </Box>
-      <Text mt="2" color="white">
-        Play Trailer
-      </Text>
-    </Box>
+      <Animated.Text style={animatedTextStyle}>BOOK NOW</Animated.Text>
+    </AnimatedPressable>
   );
 };
 
-const Cast = ({ movie }: { movie: Movie }) => {
-  const { data, isLoading, isError, error } = useMovieCast(movie.id);
-
-  if (!data) return null;
-
+const DetailsHeader = ({ insets, onPressBack }) => {
   return (
-    <>
-      <Text ml="6" fontSize="xl" fontWeight="semibold">
-        Cast
-      </Text>
-      <ScrollView
-        pl="6"
-        horizontal
-        mt="2"
-        showsHorizontalScrollIndicator={false}
+    <Animated.View
+      entering={FadeIn.delay(400).duration(650)}
+      style={{ position: "absolute", zIndex: 2, top: 0, width: "100%" }}
+    >
+      <Row
+        style={{ paddingTop: insets.top }}
+        px="4"
+        pr="6"
+        justifyContent="space-between"
+        alignItems="center"
       >
-        {data.cast.slice(0, 5).map((person, i) => {
-          const names = person.name.split(" ");
-          const last = names[names.length - 1];
-          return (
-            <Box mr="4" key={`cast_${person.id}`}>
-              <Box shadow="3">
-                <Animated.Image
-                  // layout={Layout.}
-                  entering={FadeInDown.delay((i + 1) * 100).duration(600)}
-                  source={{ uri: getUrlForImagePath(person.profile_path, 500) }}
-                  style={{
-                    height: 150,
-                    width: 150,
-                    borderRadius: 12,
-                  }}
-                />
-              </Box>
+        <Pressable flexDirection="row" onPress={onPressBack}>
+          <Icon as={Entypo} color="white" name="chevron-left" size={"md"} />
+          <Text color="white" fontWeight="bold">
+            BACK
+          </Text>
+        </Pressable>
 
-              <Text numberOfLines={2} mt="2" fontWeight="medium" fontSize="14">
-                {person.name.replace(last, "")}
-                {`\n${last}`}
-              </Text>
-            </Box>
-          );
-        })}
-      </ScrollView>
-    </>
-  );
-};
-
-const MovieImages = ({ movieId }) => {
-  const { data } = useMovieImages(movieId);
-  if (!data) return null; //@todo add loader
-  const imageSize = 150;
-  return (
-    <ScrollView horizontal mt="2" pb="4" showsHorizontalScrollIndicator={false}>
-      {data.backdrops.map((image) => {
-        return (
-          <Box shadow="3" mr="3">
-            <Image
-              source={{ uri: image.path }}
-              style={{
-                height: imageSize,
-                width: imageSize * 1.777,
-                borderRadius: 12,
-              }}
-            />
-          </Box>
-        );
-      })}
-    </ScrollView>
+        <Row>
+          <Icon
+            as={Entypo}
+            color="white"
+            name="dots-three-vertical"
+            size={"md"}
+            mr="1"
+          />
+          <Icon as={Entypo} color="white" name="heart-outlined" size={"md"} />
+        </Row>
+      </Row>
+    </Animated.View>
   );
 };
