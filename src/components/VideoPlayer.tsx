@@ -4,19 +4,19 @@ import { View, Pressable } from "react-native";
 import YoutubePlayer from "react-native-youtube-iframe";
 
 export default function VideoPlayer({ video, playing, size = 180 }) {
-  const [isPlaying, setPlaying] = useState(playing);
+  // const [isPlaying, setPlaying] = useState(playing);
 
-  const onStateChange = useCallback((state) => {
-    if (state === "ended") {
-      setPlaying(false);
-    }
-  }, []);
+  // const onStateChange = useCallback((state) => {
+  //   if (state === "ended") {
+  //     setPlaying(false);
+  //   }
+  // }, []);
 
-  useEffect(() => {
-    if (!isPlaying && playing) {
-      setPlaying(true);
-    }
-  }, [playing]);
+  // useEffect(() => {
+  //   if (!isPlaying && playing) {
+  //     setPlaying(true);
+  //   }
+  // }, [playing]);
 
   return (
     <Box
@@ -31,7 +31,7 @@ export default function VideoPlayer({ video, playing, size = 180 }) {
         height={size}
         play={playing}
         videoId={video.key}
-        onChangeState={onStateChange}
+        // onChangeState={onStateChange}
       />
     </Box>
   );

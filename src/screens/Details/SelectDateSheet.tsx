@@ -25,6 +25,8 @@ import VideoPlayer from "../../components/VideoPlayer";
 
 export type ISelectDateSheetProps = {
   visible: boolean;
+  trailer;
+  onReserve;
 };
 
 function addDays(date, days) {
@@ -52,6 +54,7 @@ const TIMES = ["11.00", "13.30", "16.00", "18.30", "21.00"];
 const SelectDateSheet = ({
   visible,
   trailer,
+  onReserve,
 }: PropsWithChildren<ISelectDateSheetProps>) => {
   const { height } = useWindowDimensions();
   const [selected, setSelected] = useState(-1);
@@ -65,10 +68,10 @@ const SelectDateSheet = ({
     const timingConfig = !visible
       ? {
           easing: Easing.inOut(Easing.ease),
-          duration: 300,
+          duration: 250,
         }
       : {
-          easing: Easing.out(Easing.circle),
+          easing: Easing.out(Easing.ease),
           duration: 400,
         };
     translateY.value = withTiming(
@@ -113,7 +116,7 @@ const SelectDateSheet = ({
             Select date and time
           </Heading>
           <Box mt="4">
-            <VideoPlayer video={trailer} size={200} playing={visible} />{" "}
+            <VideoPlayer video={trailer} size={200} playing={visible} />
           </Box>
 
           <Text color="white" mt="2" fontSize="lg" fontWeight="bold">
@@ -161,7 +164,8 @@ const SelectDateSheet = ({
               );
             })}
           </Row>
-          <Box
+          <Pressable
+            onPress={onReserve}
             position="absolute"
             alignSelf="center"
             bg="violet.500"
@@ -185,7 +189,7 @@ const SelectDateSheet = ({
             <Text color="white" fontWeight="bold" fontSize={16}>
               RESERVATION
             </Text>
-          </Box>
+          </Pressable>
         </Box>
       </LinearGradient>
     </Animated.View>

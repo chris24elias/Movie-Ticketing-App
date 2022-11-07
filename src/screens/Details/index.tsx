@@ -15,6 +15,7 @@ import Animated, {
 import { Movie } from "../../api/types";
 import { Content } from "./Content";
 import { SelectDateSheet } from "./SelectDateSheet";
+import { SelectSeatsSheet } from "./SelectSeatsSheet";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
@@ -29,13 +30,33 @@ const Details = ({ navigation, route }: PropsWithChildren<IDetailsProps>) => {
   const insets = useSafeAreaInsets();
   const { data: details } = useMovieDetails(item.id);
   const [dateSheetVisible, setDateSheetVisible] = useState(false);
+  const [bookBtnExpanded, setBookBtnExpanded] = useState(false);
+  const [chooseSeatsVisible, setChooseSeatsVisible] = useState(false);
 
   const onPressBack = () => {
-    if (dateSheetVisible) {
+    if (chooseSeatsVisible) {
+      setChooseSeatsVisible(false);
+      setDateSheetVisible(true);
+    } else if (dateSheetVisible) {
       setDateSheetVisible(false);
+      setBookBtnExpanded(false);
     } else {
       navigation.goBack();
     }
+  };
+
+  const onBookPress = () => {
+    setBookBtnExpanded(true);
+    setDateSheetVisible(true);
+  };
+
+  const onReserve = () => {
+    setDateSheetVisible(false);
+    setChooseSeatsVisible(true);
+  };
+
+  const onBuyTickets = () => {
+    //
   };
 
   let trailer;
@@ -57,11 +78,23 @@ const Details = ({ navigation, route }: PropsWithChildren<IDetailsProps>) => {
       <Content item={item} details={details} />
       <BookButton
         insets={insets}
-        setDateSheetVisible={setDateSheetVisible}
+        onBookPress={onBookPress}
+        bookBtnExpanded={bookBtnExpanded}
         dateSheetVisible={dateSheetVisible}
       />
       {details && (
-        <SelectDateSheet visible={dateSheetVisible} trailer={trailer} />
+        <SelectDateSheet
+          visible={dateSheetVisible}
+          trailer={trailer}
+          onReserve={onReserve}
+        />
+      )}
+      {details && (
+        <SelectSeatsSheet
+          visible={chooseSeatsVisible}
+          trailer={trailer}
+          onBuyTickets={onBuyTickets}
+        />
       )}
     </Box>
   );
@@ -69,7 +102,12 @@ const Details = ({ navigation, route }: PropsWithChildren<IDetailsProps>) => {
 
 export { Details };
 
-const BookButton = ({ insets, setDateSheetVisible, dateSheetVisible }) => {
+const BookButton = ({
+  insets,
+  bookBtnExpanded,
+  dateSheetVisible,
+  onBookPress,
+}) => {
   const { width, height } = useWindowDimensions();
   const buttonHeight = 48;
   const btnWidth = useSharedValue(width * 0.9);
@@ -97,7 +135,7 @@ const BookButton = ({ insets, setDateSheetVisible, dateSheetVisible }) => {
     };
   });
   useEffect(() => {
-    if (!dateSheetVisible) {
+    if (!bookBtnExpanded) {
       setTimeout(() => {
         const timingConfig = {
           duration: 300,
@@ -111,7 +149,7 @@ const BookButton = ({ insets, setDateSheetVisible, dateSheetVisible }) => {
         textOpacity.value = withDelay(200, withTiming(1, timingConfig));
       }, 150);
     }
-  }, [dateSheetVisible]);
+  }, [bookBtnExpanded]);
 
   const onPress = () => {
     btnWidth.value = withTiming(buttonHeight);
@@ -123,7 +161,7 @@ const BookButton = ({ insets, setDateSheetVisible, dateSheetVisible }) => {
     btnBottom.value = withDelay(300, withTiming(height / 3, timingConfig));
 
     setTimeout(() => {
-      setDateSheetVisible(true);
+      onBookPress();
     }, 550);
   };
 
