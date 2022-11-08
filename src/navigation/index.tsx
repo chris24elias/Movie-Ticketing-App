@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Home } from "../screens/Home";
 import { createSharedElementStackNavigator } from "react-navigation-shared-element";
 import { Details } from "../screens/Details";
+import { Confirmation } from "../screens/Confirmation";
 
 // const Stack = createNativeStackNavigator();
 
@@ -34,13 +35,16 @@ const Navigation = ({}: PropsWithChildren<INavigationProps>) => {
           }}
           sharedElements={(route, otherRoute, showing) => {
             const { item } = route.params;
-            return [
-              {
-                id: `item.${item.id}.photo`,
-              },
-            ];
+            if (otherRoute.name === "Home" && showing) {
+              return [
+                {
+                  id: `item.${item.id}.photo`,
+                },
+              ];
+            }
           }}
         />
+        <Stack.Screen name="Confirmation" component={Confirmation} />
       </Stack.Navigator>
     </NavigationContainer>
   );

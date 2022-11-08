@@ -1,7 +1,11 @@
 import React, { PropsWithChildren, useEffect, useState } from "react";
 import { Box, Icon, Pressable, Row, Text } from "native-base";
 import { useMovieDetails } from "../../queries";
-import { useWindowDimensions } from "react-native";
+import {
+  ActivityIndicator,
+  StyleSheet,
+  useWindowDimensions,
+} from "react-native";
 import { Entypo } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Animated, {
@@ -32,6 +36,7 @@ const Details = ({ navigation, route }: PropsWithChildren<IDetailsProps>) => {
   const [dateSheetVisible, setDateSheetVisible] = useState(false);
   const [bookBtnExpanded, setBookBtnExpanded] = useState(false);
   const [chooseSeatsVisible, setChooseSeatsVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const onPressBack = () => {
     if (chooseSeatsVisible) {
@@ -57,6 +62,14 @@ const Details = ({ navigation, route }: PropsWithChildren<IDetailsProps>) => {
 
   const onBuyTickets = () => {
     //
+    setLoading(true);
+    setTimeout(() => {
+      navigation.navigate("Confirmation", {
+        item,
+        details,
+      });
+      setLoading(false);
+    }, 1000);
   };
 
   let trailer;
@@ -82,6 +95,21 @@ const Details = ({ navigation, route }: PropsWithChildren<IDetailsProps>) => {
         bookBtnExpanded={bookBtnExpanded}
         dateSheetVisible={dateSheetVisible}
       />
+      {loading && (
+        <Animated.View
+          entering={FadeIn}
+          style={{
+            ...StyleSheet.absoluteFillObject,
+            zIndex: 100,
+            backgroundColor: "rgba(0,0,0,0.2)",
+          }}
+        >
+          <ActivityIndicator
+            style={{ flex: 1, alignSelf: "center" }}
+            size="large"
+          />
+        </Animated.View>
+      )}
       {details && (
         <SelectDateSheet
           visible={dateSheetVisible}
@@ -162,7 +190,7 @@ const BookButton = ({
 
     setTimeout(() => {
       onBookPress();
-    }, 550);
+    }, 350);
   };
 
   return (

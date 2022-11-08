@@ -67,12 +67,12 @@ const SelectDateSheet = ({
   useEffect(() => {
     const timingConfig = !visible
       ? {
-          easing: Easing.inOut(Easing.ease),
-          duration: 250,
+          easing: Easing.inOut(Easing.circle),
+          duration: 600,
         }
       : {
-          easing: Easing.out(Easing.ease),
-          duration: 400,
+          easing: Easing.inOut(Easing.cubic),
+          duration: 600,
         };
     translateY.value = withTiming(
       visible ? 0 : containerHeight + 150,
