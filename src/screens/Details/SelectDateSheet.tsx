@@ -60,8 +60,9 @@ const SelectDateSheet = ({
   const [selected, setSelected] = useState(-1);
   const [timeSelected, setTimeSelected] = useState(-1);
 
-  const containerHeight = height * 0.87;
-  const translateY = useSharedValue(containerHeight + 150);
+  const containerHeight = height * 0.89;
+  const defaultHeight = containerHeight + 150;
+  const translateY = useSharedValue(defaultHeight);
   const theme = useTheme();
 
   useEffect(() => {
@@ -74,10 +75,7 @@ const SelectDateSheet = ({
           easing: Easing.inOut(Easing.cubic),
           duration: 600,
         };
-    translateY.value = withTiming(
-      visible ? 0 : containerHeight + 150,
-      timingConfig
-    );
+    translateY.value = withTiming(visible ? 0 : defaultHeight, timingConfig);
   }, [visible]);
 
   const style = useAnimatedStyle(() => {

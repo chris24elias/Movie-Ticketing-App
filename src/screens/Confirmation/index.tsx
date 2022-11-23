@@ -22,7 +22,7 @@ const Confirmation = ({
 }: PropsWithChildren<IConfirmationProps>) => {
   const { item, details } = route.params;
   const insets = useSafeAreaInsets();
-  const posterSize = 130;
+  const posterSize = 110;
   const theme = useTheme();
   const onPayNow = () => {
     navigation.navigate("Home");
@@ -47,7 +47,13 @@ const Confirmation = ({
           </Text>
         </Pressable>
       </Row>
-      <Heading size="2xl" color="white" alignSelf="center" mt="6">
+      <Heading
+        size="xl"
+        textAlign="center"
+        color="white"
+        alignSelf="center"
+        mt="6"
+      >
         {item.title}
       </Heading>
       <Box
@@ -63,7 +69,7 @@ const Confirmation = ({
           style={StyleSheet.absoluteFill}
         />
       </Box>
-      <Box mt="6" px="4" w="full">
+      <Box mt="8" px="4" w="full">
         <Row justifyContent="space-between" alignItems="center" w="full">
           <Row justifyContent="center" alignItems="center">
             <Image
@@ -113,7 +119,7 @@ const Confirmation = ({
         </Row>
         <Divider opacity={0.5} my="6" />
       </Box>
-      <Box alignSelf="flex-end" mr="4">
+      <Box alignSelf="flex-end" mr="4" mt="6">
         <Text color="gray.400" textAlign="right" fontWeight="semibold">
           Total price
         </Text>

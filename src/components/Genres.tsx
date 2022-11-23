@@ -20,8 +20,15 @@ const Genres = ({ genres }) => {
             borderRadius="full"
             py="1"
             px="2"
+            justifyContent="center"
+            alignItems="center"
           >
-            <Text fontSize="xs" fontWeight="semibold">
+            <Text
+              fontSize="xs"
+              fontWeight="semibold"
+              maxWidth="16"
+              numberOfLines={1}
+            >
               {genre.name}
             </Text>
           </Box>
